@@ -14,17 +14,17 @@ interface RetrofitService {
 //    ): Call<User>   // 응답으로 User 객체가 반환
 
     @Headers("content-type: application/json")
-    @POST("login")
+    @POST("users")
     fun register(
-        @Body params: HashMap<String, String>   // nickname, password
+        @Body user: User   // nickname, password
     ): Call<User>
 
     // 닉네임 중복 확인 GET
     @Headers("content-type: application/json")
     @GET("users")
     fun getNicknameIsExist(
-        @Body nickname: String
-    ): Boolean
+        @Query("nickname") nickname: String
+    ): Call<Nickname>
 
     // 로그인 POST
     @Headers("content-type: application/json")
@@ -32,6 +32,5 @@ interface RetrofitService {
     fun login(
         @Body params: HashMap<String, String>
     ): Call<User>
-
 
 }
