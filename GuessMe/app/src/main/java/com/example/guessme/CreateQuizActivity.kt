@@ -29,7 +29,7 @@ class CreateQuizActivity : AppCompatActivity() {
 //        val adapter = CreateQuizAdapter(context, createQuizList)
 //        recyclerView.adapter = adapter
 //        recyclerView.layoutManager = LinearLayoutManager(this@CreateQuizActivity)
-//        
+//
     }
 
 
