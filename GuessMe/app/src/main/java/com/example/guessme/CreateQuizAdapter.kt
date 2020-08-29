@@ -99,7 +99,7 @@ class CreateQuizAdapter(val context: Context, val create_quiz_list: ArrayList<Qu
 //            iv_no.setOnClickListener {
 //                if (quiz.answer != 0) { // 1이나 -1 일 때
 //                    iv_no.setBackgroundColor(Color.parseColor("#FE5959"))
-//                    iv_yes.setBackgroundColor(Color.parseColor("#ededed"))
+//                     iv_yes.setBackgroundColor(Color.parseColor("#ededed"))
 //                    quiz.answer = 0
 //                } else {
 //                    iv_no.setBackgroundColor(Color.parseColor("#ededed"))

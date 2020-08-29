@@ -18,13 +18,27 @@ class ReadRankActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
-    val context : Context = this
+    val context: Context = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_read_rank)
 
+        for (i in 0 until 5) {
+            ranklist.add(Rank(1, "jihyun", 100))
+        }
+
+        // test code -> layout 확인
+        recyclerView = findViewById<RecyclerView>(R.id.rv_rank)
+        viewManager = LinearLayoutManager(context)
+        viewAdapter = RankAdapter(ranklist)
+        recyclerView.adapter = viewAdapter
+        recyclerView.layoutManager = viewManager
+
+
     }
+
+    val rank_list: ArrayList<Rank> = arrayListOf()
 
     inner class rank_control {
         fun show_Rank(context: Context) {
