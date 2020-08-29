@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -21,12 +22,18 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var password1View: EditText
     lateinit var password2View: EditText
     lateinit var registerBtn: TextView
+    lateinit var nicknameOkBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
         initView(this@SignUpActivity)
+
+        nicknameOkBtn.setOnClickListener {
+            // 닉네임 중복 확인
+            nicknameCheck(this)
+        }
 
         signup_btn.setOnClickListener {
             register(this)
@@ -39,18 +46,41 @@ class SignUpActivity : AppCompatActivity() {
         val password2 = getPassword2()
         val user = User(nickname, password1)
 
+        if (nickname != "" && password1 != "" && password2 != "") {
+            // 비밀번호 일치 확인
+            if (password1 != password2) {
+                Toast.makeText(activity, "비밀번호가 일치하지 않습니다", Toast.LENGTH_LONG).show()
+            } else {
+                (application as MasterApplication).service.register(user)
+                    .enqueue(object : Callback<User> {
+                        override fun onFailure(call: Call<User>, t: Throwable) {
+                            Toast.makeText(activity, "회원가입에 실패했습니다", Toast.LENGTH_LONG).show()
+                        }
 
-        // 비밀번호 일치 확인
-        if (password1 != password2) {
-            Log.d("user", "비밀번호 불일치")
-            Toast.makeText(activity, "비밀번호가 일치하지 않습니다", Toast.LENGTH_LONG).show()
+                        override fun onResponse(call: Call<User>, response: Response<User>) {
+                            Toast.makeText(activity, "회원가입에 성공했습니다", Toast.LENGTH_LONG).show()
+                            val user = response.body()
+                            val token = response.headers().get("Authorization").toString()
+                            saveUserToken(token, activity)
+                            (application as MasterApplication).createRetrofit()
+                            activity.startActivity(
+                                Intent(activity, SignInActivity::class.java)
+                            )
+                        }
+                    })
+            }
+        } else {
+            Toast.makeText(activity, "회원가입 정보를 입력해주세요", Toast.LENGTH_LONG).show()
         }
-        // 닉네임 중복 확인
-//        else if (!((application as MasterApplication).service.getNicknameIsExist(nickname))) {
-//            Toast.makeText(activity, "닉네임이 중복됩니다", Toast.LENGTH_LONG).show()
-//        }
+    }
 
-        else {
+    // 닉네임 중복 확인 함수
+    fun nicknameCheck(activity: Activity) {
+        val nickname = getNickName()
+
+        if (nickname == "") {
+            Toast.makeText(activity, "닉네임을 입력해주세요", Toast.LENGTH_LONG).show()
+        } else {
             (application as MasterApplication).service.getNicknameIsExist(nickname)
                 .enqueue(object : Callback<Nickname> {
                     override fun onFailure(call: Call<Nickname>, t: Throwable) {
@@ -61,34 +91,17 @@ class SignUpActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             val result = response.body()
                             val success = result!!.success!!
+                            // 닉네임 중복
                             if (!success) {
-                                Toast.makeText(activity, "닉네임이 중복됩니다", Toast.LENGTH_LONG).show()
-                            }
-                            else {
-                                (application as MasterApplication).service.register(user)
-                                    .enqueue(object : Callback<User> {
-                                        override fun onFailure(call: Call<User>, t: Throwable) {
-                                            Toast.makeText(activity, "회원가입에 실패했습니다", Toast.LENGTH_LONG).show()
-                                        }
-
-                                        override fun onResponse(call: Call<User>, response: Response<User>) {
-                                            Log.d("user", "회원가입 가능")
-                                            Toast.makeText(activity, "회원가입에 성공했습니다", Toast.LENGTH_LONG).show()
-                                            val user = response.body()
-                                            val token = response.headers().get("Authorization").toString()
-                                            saveUserToken(token, activity)
-                                            (application as MasterApplication).createRetrofit()
-                                            activity.startActivity(
-                                                Intent(activity, SignInActivity::class.java)
-                                            )
-                                        }
-                                    })
+                                Toast.makeText(activity, "사용 불가능한 닉네임입니다", Toast.LENGTH_LONG).show()
+                            } else {
+                                Toast.makeText(activity, "사용 가능한 닉네임입니다", Toast.LENGTH_LONG).show()
                             }
                         }
                     }
                 })
-
         }
+
     }
 
     // 토큰 받아서 SharedPreference에 저장
@@ -104,6 +117,7 @@ class SignUpActivity : AppCompatActivity() {
         password1View = activity.findViewById(R.id.password1_inputbox)
         password2View = activity.findViewById(R.id.password2_inputbox)
         registerBtn = activity.findViewById(R.id.signup_btn)
+        nicknameOkBtn = activity.findViewById(R.id.nickname_ok_btn)
     }
 
     fun getNickName(): String{

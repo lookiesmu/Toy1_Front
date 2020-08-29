@@ -23,36 +23,7 @@ class ReadQuizActivity : AppCompatActivity() {
 
         nickname = intent.getStringExtra("nickname")
         tv_cq_title.setText(String.format("%s님의 퀴즈를 풀어보세요!", nickname))
-        Solve_Control().GET_QUIZ(nickname)
     }
-
-    inner class Solve_Control() {
-
-        // 닉네임에 해당하는 퀴즈 바로 받아오기
-        fun GET_QUIZ(nickname: String) {
-            val quiz_url = Constants.BASE_URL + "/quizzes/" + nickname
-            asynctask().excute("0", quiz_url)
-        }
-
-        fun POST_SCORE(nickname: String, score: String) {
-            val quiz_url = Constants.BASE_URL + "/quizzes/" + nickname
-            asynctask().excute("1", quiz_url, score)
-        }
-    }
-
-    inner class asynctask : AsyncTask<String, Void, String>() {
-        // state = 1 -> GET : 퀴즈 조회
-        // state = 2 -> POST : 점수 전송
-        var state: Int = -1
-        var score: String = ""
-
-
-    }
-
-    lateinit var recyclerView: RecyclerView
-    lateinit var viewAdapter: RecyclerView.Adapter<*>
-    lateinit var viewManager: RecyclerView.LayoutManager
-    val context: Context = this
 
     // view 보기 위한 초기화
 //        recyclerView = findViewById<RecyclerView>(R.id.read_quiz)
@@ -65,4 +36,4 @@ class ReadQuizActivity : AppCompatActivity() {
 
 
 }
-}
+
