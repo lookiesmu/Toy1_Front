@@ -37,9 +37,7 @@ class SignUpActivity : AppCompatActivity() {
         val nickname = getNickName()
         val password1 = getPassword1()
         val password2 = getPassword2()
-        val body = HashMap<String, String>()
-        body.put("nickname", nickname)
-        body.put("password", password1)
+        val user = User(nickname, password1)
 
 
         // 비밀번호 일치 확인
@@ -48,42 +46,48 @@ class SignUpActivity : AppCompatActivity() {
             Toast.makeText(activity, "비밀번호가 일치하지 않습니다", Toast.LENGTH_LONG).show()
         }
         // 닉네임 중복 확인
-        else if (!(application as MasterApplication).service.getNicknameIsExist(nickname)) {
-            Log.d("user", "닉네임 중복")
-            Toast.makeText(activity, "닉네임이 중복됩니다", Toast.LENGTH_LONG).show()
-        }
-        else {
-            Log.d("user", "회원가입 가능")
-            (application as MasterApplication).service.register(
-                body
-            ).enqueue(object :
-                Callback<User> {
-                override fun onFailure(call: Call<User>, t: Throwable) {
-//                // 닉네임 중복 확인
-//                if (!(application as MasterApplication).service.getNicknameIsExist(nickname)) {
-//                    Toast.makeText(activity, "닉네임이 중복됩니다", Toast.LENGTH_LONG).show()
-//                }
-//                // 비밀번호 일치 확인
-//                else if (password1 != password2) {
-//                    Toast.makeText(activity, "비밀번호가 일치하지 않습니다", Toast.LENGTH_LONG).show()
-//                }
-                    Toast.makeText(activity, "회원가입에 실패했습니다", Toast.LENGTH_LONG).show()
-                }
+//        else if (!((application as MasterApplication).service.getNicknameIsExist(nickname))) {
+//            Toast.makeText(activity, "닉네임이 중복됩니다", Toast.LENGTH_LONG).show()
+//        }
 
-                override fun onResponse(call: Call<User>, response: Response<User>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(activity, "회원가입에 성공했습니다", Toast.LENGTH_LONG).show()
-                        val user = response.body()
-//                    val token = user!!.token!!
-                        val token = response.headers().get("Authorization").toString()
-                        saveUserToken(token, activity)
-                        (application as MasterApplication).createRetrofit()
-                        activity.startActivity(
-                            Intent(activity, SignInActivity::class.java)
-                        )
+        else {
+            (application as MasterApplication).service.getNicknameIsExist(nickname)
+                .enqueue(object : Callback<Nickname> {
+                    override fun onFailure(call: Call<Nickname>, t: Throwable) {
+                        Toast.makeText(activity, "닉네임 중복 확인에 실패했습니다", Toast.LENGTH_LONG).show()
                     }
-                }
-            })
+
+                    override fun onResponse(call: Call<Nickname>, response: Response<Nickname>) {
+                        if (response.isSuccessful) {
+                            val result = response.body()
+                            val success = result!!.success!!
+                            if (!success) {
+                                Toast.makeText(activity, "닉네임이 중복됩니다", Toast.LENGTH_LONG).show()
+                            }
+                            else {
+                                (application as MasterApplication).service.register(user)
+                                    .enqueue(object : Callback<User> {
+                                        override fun onFailure(call: Call<User>, t: Throwable) {
+                                            Toast.makeText(activity, "회원가입에 실패했습니다", Toast.LENGTH_LONG).show()
+                                        }
+
+                                        override fun onResponse(call: Call<User>, response: Response<User>) {
+                                            Log.d("user", "회원가입 가능")
+                                            Toast.makeText(activity, "회원가입에 성공했습니다", Toast.LENGTH_LONG).show()
+                                            val user = response.body()
+                                            val token = response.headers().get("Authorization").toString()
+                                            saveUserToken(token, activity)
+                                            (application as MasterApplication).createRetrofit()
+                                            activity.startActivity(
+                                                Intent(activity, SignInActivity::class.java)
+                                            )
+                                        }
+                                    })
+                            }
+                        }
+                    }
+                })
+
         }
     }
 
