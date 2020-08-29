@@ -47,8 +47,7 @@ class SignInActivity : AppCompatActivity() {
                         (application as MasterApplication).createRetrofit()
                         Toast.makeText(this@SignInActivity, "환영합니다!", Toast.LENGTH_LONG).show()
                         startActivity (
-                            // Intent(this@SignInActivity, SearchActivity::class.java)
-                            Intent(this@SignInActivity, SignUpActivity::class.java)
+                             Intent(this@SignInActivity, SearchActivity::class.java)
                         )
                     }
                 }
