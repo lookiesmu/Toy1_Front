@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:name=".MasterApplication"
         android:theme="@style/AppTheme">
-      
         <activity android:name=".MasterApplication"></activity>
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity">
@@ -24,10 +23,8 @@
         </activity>
 
         <activity android:name=".ReadRankActivity" />
-        <activity android:name=".SignInActivity" />
         <activity android:name=".MainActivity"/>
-        <activity android:name=".SearchActivity" />      
-        <activity android:name=".MainActivity" />
+        <activity android:name=".SearchActivity" />
         <activity android:name=".ReadQuizActivity" />
         <activity android:name=".CreateQuizActivity" />
     </application>

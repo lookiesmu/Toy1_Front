@@ -15,21 +15,22 @@
         android:textSize="60dp"
         android:layout_gravity="center"
         android:layout_marginTop="150dp"
-        android:textColor="#000000"/>
+        android:textColor="#353535"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/signin_nickname"
-        android:layout_width="250dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="50dp"
         android:hint="닉네임을 입력하세요"
         android:textColorHint="#575656"/>
 
     <EditText
         android:id="@+id/signin_password"
-        android:layout_width="250dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
@@ -45,19 +46,21 @@
         android:text="회원가입"
         android:textSize="15dp"
         android:textColor="#575656"
-        android:layout_marginLeft="270dp"
+        android:layout_marginLeft="290dp"
         />
 
     <TextView
         android:id="@+id/login_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="로그인"
+        android:text="LogIn"
         android:textSize="30dp"
+        android:textStyle="bold"
         android:layout_gravity="center"
-        android:padding="5dp"
+        android:padding="10dp"
         android:layout_marginTop="40dp"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
+        android:background="#353535"
         />
 
 </LinearLayout>
